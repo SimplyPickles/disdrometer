@@ -1,7 +1,18 @@
 # Disdrometer
 
-A macOS menu-bar app that overlays realistic rain animations on your desktop. It provides a subtle, customizable weather effect that can be used for ambience, presentations, or just for fun.
 
+
+A macOS menu‑bar app that overlays realistic rain animations on your desktop. It provides a subtle, customizable weather effect that can be used for ambience, presentations, or just for fun.
+
+## Table of Contents
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Building](#building)
+- [Architecture](#architecture)
+- [Settings](#settings)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Features
 
@@ -21,9 +32,23 @@ A macOS menu-bar app that overlays realistic rain animations on your desktop. It
 
 The app does not require any additional runtime libraries.
 
-- macOS 13.0+ (for SwiftUI `MenuBarExtra`)
-- Xcode 14+
 
+
+
+## Installation
+
+### Pre‑built binary
+Download the latest release from the **Releases** page, unzip, and move `Disdrometer.app` to your `/Applications` folder.
+
+### Build from source
+```sh
+# Clone the repository
+git clone https://github.com/yourusername/disdrometer.git
+cd disdrometer
+
+# Open the Xcode project and build
+open Disdrometer/Disdrometer.xcodeproj
+```
 
 ## Building
 
@@ -41,8 +66,6 @@ cd Disdrometer
 xcodebuild -scheme Disdrometer -configuration Release
 ```
 The built product will be located in `./build/Release/Disdrometer.app`.
-
-Open `Disdrometer/Disdrometer.xcodeproj` in Xcode and build. The app runs as a menu-bar agent (no Dock icon) by default.
 
 
 ## Architecture
@@ -71,3 +94,11 @@ The app exposes several parameters that can be tweaked in real time from the men
 | Lifetime     | 1‑15 s               | How long each drop exists |
 
 You can also reset all settings to their defaults via the **Reset** button in the menu.
+
+## Contributing
+
+Contributions are welcome! Please fork the repository, create a feature branch, and submit a pull request.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
