@@ -126,7 +126,7 @@ final class RainView: NSView {
     let angleRadians = angleDegrees * .pi / 180
     let horizontalDrift = sin(angleRadians) * bounds.height
     let totalWidth = bounds.width + abs(horizontalDrift) * 1.2
-    let offsetX = horizontalDrift * 0.5
+    let offsetX = horizontalDrift * -0.5
     rainEmitter.emitterPosition = CGPoint(x: bounds.midX + offsetX, y: bounds.maxY + 20)
     rainEmitter.emitterSize = CGSize(width: totalWidth, height: 1)
   }

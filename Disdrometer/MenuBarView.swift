@@ -75,12 +75,11 @@ struct MenuBarView: View {
         SliderControl(
           label: "Lifetime",
           value: $controller.lifetime,
-          range: 1...15,
+          range: 1...30,
           format: { String(format: "%.1fs", $0) }
         )
 
         // Drop Style Picker
-
         VStack(alignment: .leading, spacing: 6) {
             HStack {
                 Text("Drop Style")
