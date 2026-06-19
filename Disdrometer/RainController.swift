@@ -48,12 +48,6 @@ final class RainController: ObservableObject {
     }
   }
 
-  @Published var lifetime: Double {
-    didSet {
-      UserDefaults.standard.set(lifetime, forKey: "lifetime")
-      applyToAllWindows { $0.lifetime = CGFloat(lifetime) }
-    }
-  }
 
   @Published var dimEnabled: Bool {
     didSet {
@@ -86,7 +80,6 @@ final class RainController: ObservableObject {
     angleDegrees = UserDefaults.standard.object(forKey: "angleDegrees") as? Double ?? -30
     fallSpeed = UserDefaults.standard.object(forKey: "fallSpeed") as? Double ?? 200
     opacity = UserDefaults.standard.object(forKey: "opacity") as? Double ?? 0.4
-    lifetime = UserDefaults.standard.object(forKey: "lifetime") as? Double ?? 7.5
 
     // Load new persistence settings
     dimEnabled = UserDefaults.standard.object(forKey: "dimEnabled") as? Bool ?? false
@@ -121,7 +114,6 @@ final class RainController: ObservableObject {
       (window.contentView as? RainView)?.angleDegrees = CGFloat(angleDegrees)
       (window.contentView as? RainView)?.fallSpeed = CGFloat(fallSpeed)
       (window.contentView as? RainView)?.opacity = CGFloat(opacity)
-      (window.contentView as? RainView)?.lifetime = CGFloat(lifetime)
       (window.contentView as? RainView)?.dimEnabled = dimEnabled
       (window.contentView as? RainView)?.dimOpacity = CGFloat(dimOpacity)
       (window.contentView as? RainView)?.dropStyle = dropStyle

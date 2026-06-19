@@ -134,21 +134,23 @@ final class RainView: NSView {
   private func makeRainCell() -> CAEmitterCell {
     let cell = CAEmitterCell()
     let colorWithOpacity = dropColor.withAlphaComponent(opacity)
-    cell.contents = RainView.dropImage(color: colorWithOpacity, style: dropStyle)
+    cell.contents = RainView.dropImage(
+        color: colorWithOpacity,
+        style: dropStyle,
+        angleDegrees: angleDegrees
+    )
     cell.birthRate = intensity
     cell.lifetime = Float(dropStyle.lifetime)
-    cell.lifetimeRange = Float(dropStyle.lifetime * 0.3)
+    cell.lifetimeRange = 1.5
 
     cell.velocity = fallSpeed
     cell.velocityRange = fallSpeed * 0.25
 
     cell.emissionLongitude = angleDegrees * .pi / 180
-    cell.emissionRange = 0.05
 
     cell.scale = dropStyle.scale
     cell.scaleRange = dropStyle.scale * 0.1
     cell.alphaSpeed = -0.3
-    cell.spin = 0
 
     // Apply blur for soft styles
     if dropStyle == .softBlur {
@@ -162,94 +164,107 @@ final class RainView: NSView {
     rainEmitter.emitterCells = [makeRainCell()]
   }
 
-  static func dropImage(color: NSColor, style: DropStyle) -> CGImage {
-    let size: CGSize
-    let draw: (CGContext, CGSize) -> Void
+  private static func dropImage(color: NSColor, style: DropStyle, angleDegrees: CGFloat) -> CGImage {
+      let size: CGSize
+      let draw: (CGContext, CGSize) -> Void
 
-    // Switch case to match the style to enum options
-    switch style {
-    case .fineMist:
-      size = CGSize(width: 2, height: 4)
-      draw = { context, size in
-        let path = CGPath(
-          roundedRect: CGRect(origin: .zero, size: size), cornerWidth: 1, cornerHeight: 1,
-          transform: nil)
-        context.addPath(path)
-        context.fillPath()
+      switch style {
+      case .fineMist:
+          size = CGSize(width: 2, height: 4)
+          draw = { context, size in
+              let path = CGPath(
+                  roundedRect: CGRect(origin: .zero, size: size),
+                  cornerWidth: 1, cornerHeight: 1,
+                  transform: nil
+              )
+              context.addPath(path)
+              context.fillPath()
+          }
+      case .longStreaks:
+          size = CGSize(width: 1, height: 16)
+          draw = { context, size in
+              context.move(to: CGPoint(x: 0.5, y: 0))
+              context.addLine(to: CGPoint(x: 0.5, y: size.height))
+              context.setLineWidth(1)
+              context.strokePath()
+          }
+      case .heavyDrops:
+          size = CGSize(width: 4, height: 16)
+          draw = { context, size in
+              let path = CGPath(
+                  roundedRect: CGRect(origin: .zero, size: size),
+                  cornerWidth: 2, cornerHeight: 2,
+                  transform: nil
+              )
+              context.addPath(path)
+              context.fillPath()
+          }
+      case .softBlur:
+          size = CGSize(width: 3, height: 12)
+          draw = { context, size in
+              let path = CGPath(
+                  roundedRect: CGRect(origin: .zero, size: size),
+                  cornerWidth: 1.5, cornerHeight: 1.5,
+                  transform: nil
+              )
+              context.addPath(path)
+              context.fillPath()
+          }
+      case .crispDrops:
+          size = CGSize(width: 1, height: 12)
+          draw = { context, size in
+              let path = CGPath(
+                  roundedRect: CGRect(origin: .zero, size: size),
+                  cornerWidth: 0.5, cornerHeight: 0.5,
+                  transform: nil
+              )
+              context.addPath(path)
+              context.fillPath()
+          }
       }
-    case .longStreaks:
-      size = CGSize(width: 1, height: 16)
-      draw = { context, size in
-        context.move(to: CGPoint(x: 0.5, y: 0))
-        context.addLine(to: CGPoint(x: 0.5, y: size.height))
-        context.setLineWidth(1)
-        context.strokePath()
-      }
-    case .heavyDrops:
-      size = CGSize(width: 4, height: 16)
-      draw = { context, size in
-        let path = CGPath(
-          roundedRect: CGRect(origin: .zero, size: size), cornerWidth: 2, cornerHeight: 2,
-          transform: nil)
-        context.addPath(path)
-        context.fillPath()
-      }
-    case .softBlur:
-      size = CGSize(width: 3, height: 12)
-      draw = { context, size in
-        let path = CGPath(
-          roundedRect: CGRect(origin: .zero, size: size), cornerWidth: 1.5, cornerHeight: 1.5,
-          transform: nil)
-        context.addPath(path)
-        context.fillPath()
-      }
-    case .crispDrops:
-      size = CGSize(width: 1, height: 12)
-      draw = { context, size in
-        let path = CGPath(
-          roundedRect: CGRect(origin: .zero, size: size), cornerWidth: 0.5, cornerHeight: 0.5,
-          transform: nil)
-        context.addPath(path)
-        context.fillPath()
-      }
-    }
 
-    return renderCGImage(size: size, color: color, draw: draw)
+      return renderCGImage(size: size, color: color, angleDegrees: angleDegrees, draw: draw)
   }
 
   private static func renderCGImage(
-    size: CGSize,
-    color: NSColor,
-    draw: (CGContext, CGSize) -> Void
+      size: CGSize,
+      color: NSColor,
+      angleDegrees: CGFloat,
+      draw: (CGContext, CGSize) -> Void
   ) -> CGImage {
-    let scale: CGFloat = 2.0
-    let pixelWidth = Int(size.width * scale)
-    let pixelHeight = Int(size.height * scale)
+      let scale: CGFloat = 2.0
+      let pixelWidth = Int(size.width * scale)
+      let pixelHeight = Int(size.height * scale)
 
-    let colorSpace = CGColorSpaceCreateDeviceRGB()
-    guard
-      let context = CGContext(
-        data: nil,
-        width: pixelWidth,
-        height: pixelHeight,
-        bitsPerComponent: 8,
-        bytesPerRow: 0,
-        space: colorSpace,
-        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
-      )
-    else {
-      fatalError("RainView: failed to create CGContext for procedural image")
-    }
+      let colorSpace = CGColorSpaceCreateDeviceRGB()
+      guard
+          let context = CGContext(
+              data: nil,
+              width: pixelWidth,
+              height: pixelHeight,
+              bitsPerComponent: 8,
+              bytesPerRow: 0,
+              space: colorSpace,
+              bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+          )
+      else {
+          fatalError("RainView: failed to create CGContext for procedural image")
+      }
 
-    context.scaleBy(x: scale, y: scale)
+      context.scaleBy(x: scale, y: scale)
 
-    let rgbColor = color.usingColorSpace(.deviceRGB) ?? color
-    context.setFillColor(rgbColor.cgColor)
-    draw(context, size)
+      let radians = angleDegrees * .pi / 180
+      context.translateBy(x: size.width / 2, y: size.height / 2)
+      context.rotate(by: radians)
+      context.translateBy(x: -size.width / 2, y: -size.height / 2)
 
-    guard let image = context.makeImage() else {
-      fatalError("RainView: failed to render procedural image")
-    }
-    return image
+      let rgbColor = color.usingColorSpace(.deviceRGB) ?? color
+      context.setFillColor(rgbColor.cgColor)
+      draw(context, size)
+
+      guard let image = context.makeImage() else {
+          fatalError("RainView: failed to render procedural image")
+      }
+      return image
   }
 }
