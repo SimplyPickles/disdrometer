@@ -1,7 +1,5 @@
 # Disdrometer
 
-
-
 A macOS menu‑bar app that overlays realistic rain animations on your desktop. It provides a subtle, customizable weather effect that can be used for ambience, presentations, or just for fun.
 
 ## Table of Contents
@@ -94,11 +92,3 @@ The app exposes several parameters that can be tweaked in real time from the men
 | Lifetime     | 1‑15 s               | How long each drop exists |
 
 You can also reset all settings to their defaults via the **Reset** button in the menu.
-
-## Contributing
-
-Contributions are welcome! Please fork the repository, create a feature branch, and submit a pull request.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
