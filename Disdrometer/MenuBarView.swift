@@ -80,22 +80,23 @@ struct MenuBarView: View {
         )
 
         // Drop Style Picker
+
         VStack(alignment: .leading, spacing: 6) {
-          HStack {
-            Text("Drop Style")
-              .font(.system(size: 11, weight: .semibold, design: .default))
-            Spacer()
-            Text(controller.dropStyle.rawValue)
-              .font(.system(size: 11, weight: .regular, design: .monospaced))
-              .foregroundStyle(.secondary)
-          }
-          Picker("", selection: $controller.dropStyle) {
-            ForEach(DropStyle.allCases, id: \.self) { style in
-              Text(style.rawValue).tag(style)
+            HStack {
+                Text("Drop Style")
+                    .font(.system(size: 11, weight: .semibold, design: .default))
+
+                Spacer()
+
+                Picker("", selection: $controller.dropStyle) {
+                    ForEach(DropStyle.allCases, id: \.self) { style in
+                        Text(style.rawValue).tag(style)
+                    }
+                }
+                .pickerStyle(.menu)
+                .labelsHidden()
+                .frame(width: 140, alignment: .trailing)
             }
-          }
-          .pickerStyle(.menu)
-          .frame(maxWidth: .infinity)
         }
 
         // Dimming Controls
